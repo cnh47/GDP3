@@ -38,8 +38,8 @@ public class CollisionScript : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision col){
-		if (col.rigidbody)
+	void OnTriggerEnter(Collider col){
+		if (col.GetComponent<Rigidbody>())
 		{
 			waveNumber++;
 			if (waveNumber == 9){
@@ -59,7 +59,7 @@ public class CollisionScript : MonoBehaviour {
 			GetComponent<Renderer>().material.SetFloat("_OffsetX" + waveNumber, distanceX / mesh.bounds.size.x * 2.5f);
 			GetComponent<Renderer>().material.SetFloat("_OffsetZ" + waveNumber, distanceZ / mesh.bounds.size.z * 2.5f);
 
-			GetComponent<Renderer>().material.SetFloat("_WaveAmplitude" + waveNumber, col.rigidbody.velocity.magnitude * magnitudeDivider);
+			GetComponent<Renderer>().material.SetFloat("_WaveAmplitude" + waveNumber, col.GetComponent<Rigidbody>().velocity.magnitude * magnitudeDivider);
 
 		}
 	}

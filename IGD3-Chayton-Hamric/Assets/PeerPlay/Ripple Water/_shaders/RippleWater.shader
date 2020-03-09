@@ -9,7 +9,7 @@ Shader "Custom/RippleWater" {
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_Scale ("Scale", float) = 1
 		_Speed ("Speed", float) = 1
-		_Frequency ("Frequency", float) = 1
+		_Frequency ("Frequency", float) = 0
 	    [HideInInspector]_WaveAmplitude1 ("WaveAmplitude1", float) = 0
   [HideInInspector]_WaveAmplitude2 ("WaveAmplitude1", float) = 0
   [HideInInspector]_WaveAmplitude3 ("WaveAmplitude1", float) = 0
@@ -34,7 +34,7 @@ Shader "Custom/RippleWater" {
   [HideInInspector]_zImpact7 ("z Impact 7", float) = 0
   [HideInInspector]_xImpact8 ("x Impact 8", float) = 0
   [HideInInspector]_zImpact8 ("z Impact 8", float) = 0
-  
+
   [HideInInspector]_Distance1 ("Distance1", float) = 0
   [HideInInspector]_Distance2 ("Distance2", float) = 0
   [HideInInspector]_Distance3 ("Distance3", float) = 0
@@ -43,13 +43,13 @@ Shader "Custom/RippleWater" {
   [HideInInspector]_Distance6 ("Distance6", float) = 0
   [HideInInspector]_Distance7 ("Distance7", float) = 0
   [HideInInspector]_Distance8 ("Distance8", float) = 0
- 
+
 
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" "Queue"="Geometry+1" "ForceNoShadowCasting"="True" }
 		LOD 200
-		
+
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows vertex:vert
 		#pragma target 4.0
@@ -71,16 +71,16 @@ Shader "Custom/RippleWater" {
 			 float2 uv_BumpMap;
 			float3 customValue;
 		};
-		
+
 		void vert( inout appdata_full v, out Input o)
 		{
 		UNITY_INITIALIZE_OUTPUT(Input, o);
 		half offsetvert = ((v.vertex.x * v.vertex.x) + (v.vertex.z * v.vertex.z));
 		half offsetvert2 = v.vertex.x + v.vertex.z; //diagonal waves
 		//half offsetvert2 = v.vertex.x; //horizontal waves
-		
+
 		half value0 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert2 );
-		
+
 		half value1 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX1) + (v.vertex.z * _OffsetZ1)  );
 		half value2 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX2) + (v.vertex.z * _OffsetZ2)  );
 		half value3 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX3) + (v.vertex.z * _OffsetZ3)  );
@@ -89,20 +89,20 @@ Shader "Custom/RippleWater" {
 		half value6 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX6) + (v.vertex.z * _OffsetZ6)  );
 		half value7 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX7) + (v.vertex.z * _OffsetZ7)  );
 		half value8 = _Scale * sin(_Time.w * _Speed * _Frequency + offsetvert + (v.vertex.x * _OffsetX8) + (v.vertex.z * _OffsetZ8)  );
-		
+
 		float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-		
-		
+
+
 		v.vertex.y += value0; //remove for no waves
 		v.normal.y += value0; //remove for no waves
 		o.customValue += value0  ;
 
-		
+
 		if (sqrt(pow(worldPos.x - _xImpact1, 2) + pow(worldPos.z - _zImpact1, 2)) < _Distance1)
 		{
 		v.vertex.y += value1 * _WaveAmplitude1;
-		v.normal.y += value1 * _WaveAmplitude1;	
-		o.customValue += value1 * _WaveAmplitude1;	
+		v.normal.y += value1 * _WaveAmplitude1;
+		o.customValue += value1 * _WaveAmplitude1;
 
 		}
 		if (sqrt(pow(worldPos.x - _xImpact2, 2) + pow(worldPos.z - _zImpact2, 2)) < _Distance2)
@@ -147,7 +147,7 @@ Shader "Custom/RippleWater" {
 		v.normal.y += value8 * _WaveAmplitude8;
 		o.customValue += value8 * _WaveAmplitude8;
 		}
-		
+
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -162,6 +162,6 @@ Shader "Custom/RippleWater" {
 			 o.Normal.y += IN.customValue;
 		}
 		ENDCG
-	} 
+	}
 	FallBack "Diffuse"
 }
